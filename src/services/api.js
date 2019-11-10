@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://skaibox-api.herokuapp.com/',
+    baseURL: 'https://omnistack-backend.herokuapp.com',
 });
 
 export default api;
