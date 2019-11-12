@@ -16,7 +16,7 @@ export default class Main extends Component {
       title: this.state.newBox
     });
 
-    console.log(response.data);
+    this.props.history.push(`/box/${response.data._id}`);
   };
 
   handleInputChange  = event => {
@@ -27,7 +27,7 @@ export default class Main extends Component {
     return (
         <main id="main-container">
             <form onSubmit={this.handleSubmit}>
-                <img src={logo} alt=""/>
+                <img src={logo} alt="logo da aplicação"/>
                 <input 
                   placeholder="Criar um box" 
                   value={this.state.newBox}
