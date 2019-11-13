@@ -3,29 +3,40 @@ import api from "../../services/api";
 import { formatDistance } from "date-fns";
 import pt from 'date-fns/locale/pt';
 import Dropzone from 'react-dropzone';
+import socket from 'socket.io-client';
 
 import { MdInsertDriveFile } from 'react-icons/md';
 
-import logo from "../../assets/logo.svg";
+import logo from "../../assets/logo.png";
 import "./styles.css";
 
 export default class Box extends Component {
   state = { box: {} };
   
   async componentDidMount(){
-    
+    this.subscribeToNewFiles();
+
     const id = this.props.match.params.id;
     const response = await api.get(`boxes/${id}`);
     
     this.setState({ box: response.data});
   };
   
+  subscribeToNewFiles = () => {
+    const id = this.props.match.params.id;
+    const io = socket('https://omnistack-backend.herokuapp.com');
+
+    io.emit('connectRoom', id);
+    io.on('file', data => {
+      this.setState({box: { ...this.state.box, files: [ data, ...this.state.box.files ] }})
+    });
+  }
 
   handleUpload = (files) => {
-    const id = this.props.match.params.id;
-
+    
     files.forEach( file => {
       const data = new FormData();
+      const id = this.props.match.params.id;
 
       data.append('file', file);
       api.post(`boxes/${id}/files`, data);
